@@ -27,16 +27,15 @@ void input_enter_on()
 
 enum Direction get_input()
 {
-	enum Direction result = East;
+	enum Direction result = Error;
 	char user_input;
 	
-	// Try non-blocking read
 	fd_set fd;
 	struct timeval timeout;
 	FD_ZERO(&fd);
 	FD_SET(STDIN_FILENO, &fd);
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
+	timeout.tv_usec = 10000; // 10ms
 	
 	if (select(STDIN_FILENO + 1, &fd, NULL, NULL, &timeout) > 0) {
 		user_input = getchar();
@@ -54,7 +53,6 @@ enum Direction get_input()
 			result = East;
 			break;
 		case '\033': {
-			// Escape sequence detected, read next chars
 			char seq[3];
 			seq[0] = getchar();
 			if (seq[0] != '[') {
@@ -85,7 +83,6 @@ enum Direction get_input()
 			break;
 		}
 	} else {
-		// No input available, keep current direction (Error = no change)
 		result = Error;
 	}
 	
