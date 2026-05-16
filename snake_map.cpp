@@ -37,8 +37,6 @@ SnakeMap::SnakeMap(Snake *snake)
 
 void SnakeMap::redraw(void)
 {
-    int random_i = rand() % MAP_WIDTH;
-    int random_j = rand() % MAP_HEIGHT;
     clear_map(map_array);
     for (int i = 0; i < MAP_END; i++)
     {
@@ -52,12 +50,13 @@ void SnakeMap::redraw(void)
         map_array[tmp.first][tmp.second] = SNAKE_CHAR;
     }
     update_snake_head(map_array, snake);
-    if (random_i  - (random_j)/2 > random_j) {
+    // Random chance to move food (~62.5%)
+    int random_i = rand() % MAP_WIDTH;
+    int random_j = rand() % MAP_HEIGHT;
+    if (snake->food_eaten || random_i > random_j * 3 / 2) {
         update_snake_food(true);
-    } else {
-        update_snake_food(false);
     }
-    
+
     map_array[snake_food.first][snake_food.second] = SNAKE_FOOD_CHAR;
     for (int i = 0; i < MAP_HEIGHT; i++)
     {

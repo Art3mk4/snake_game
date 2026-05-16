@@ -5,6 +5,8 @@
 #include <string>
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/select.h>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -30,11 +32,11 @@ enum Direction get_input()
 	enum Direction result = Error;
 	char buf[64];
 	int n = read(STDIN_FILENO, buf, sizeof(buf));
-	
+
 	if (n <= 0) {
 		return Error;
 	}
-	
+
 	for (int i = 0; i < n; i++) {
 		switch (buf[i]) {
 		case 'a':
@@ -49,7 +51,7 @@ enum Direction get_input()
 		case 'd':
 			result = East;
 			break;
-		case '\033': {
+		case '\033':
 			if (i + 2 < n && buf[i+1] == '[') {
 				switch (buf[i+2]) {
 				case 'A':
@@ -65,13 +67,12 @@ enum Direction get_input()
 					result = West;
 					break;
 				}
-				i += 2; // skip escape sequence
+				i += 2;
 			}
 			break;
 		}
-		}
 	}
-	
+
 	return result;
 }
 

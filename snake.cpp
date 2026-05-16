@@ -66,7 +66,9 @@ void Snake::update_direction(enum Direction direction)
 
 void Snake::update_next_direction(enum Direction direction)
 {
-	this->next_direction = direction;
+	if (direction != Error) {
+		this->next_direction = direction;
+	}
 }
 
 enum Direction Snake::get_direction(void)
