@@ -30,7 +30,7 @@ using namespace std;
 SnakeMap::SnakeMap(Snake *snake)
 {
     this->snake = snake;
-    clear_map(this->map_array);
+    map_array = vector<vector<string>>(MAP_HEIGHT, vector<string>(MAP_WIDTH, MAP_CHAR));
     srand(time(NULL));
     update_snake_food(true);
 }
@@ -39,7 +39,7 @@ void SnakeMap::redraw(void)
 {
     int random_i = rand() % MAP_WIDTH;
     int random_j = rand() % MAP_HEIGHT;
-    clear_map(this->map_array);
+    clear_map(map_array);
     for (int i = 0; i < MAP_END; i++)
     {
         cout << endl;
@@ -63,21 +63,10 @@ void SnakeMap::redraw(void)
     {
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            if (map_array[i][j] == '.') {
-                cout << RED << map_array[i][j] << RESET << " ";
-            }
-            if (map_array[i][j] == '*'
-                || map_array[i][j] == '>'
-                || map_array[i][j] == '<'
-                || map_array[i][j] == '^'
-                || map_array[i][j] == 'v'
-            ) {
-                cout << BOLDWHITE << map_array[i][j] << RESET << " ";
-            }
-            
-            if (map_array[i][j] == '0')
-            {
-                cout << BOLDMAGENTA << map_array[i][j] << RESET << " ";
+            if (map_array[i][j] == MAP_CHAR) {
+                cout << " ";
+            } else {
+                cout << map_array[i][j] << " ";
             }
         }
         cout << endl;
@@ -103,7 +92,7 @@ void SnakeMap::update_snake_food(bool force_update)
     }
 }
 
-void clear_map(char map_array[MAP_HEIGHT][MAP_WIDTH])
+void clear_map(vector<vector<string>> &map_array)
 {
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
@@ -114,9 +103,9 @@ void clear_map(char map_array[MAP_HEIGHT][MAP_WIDTH])
     }
 }
 
-void update_snake_head(char map_array[MAP_HEIGHT][MAP_WIDTH], Snake *snake)
+void update_snake_head(vector<vector<string>> &map_array, Snake *snake)
 {
-    char snake_head_char = SNAKE_CHAR;
+    string snake_head_char = SNAKE_CHAR;
     enum Direction direction = snake->get_direction();
     switch (direction)
     {

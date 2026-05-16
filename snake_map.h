@@ -3,6 +3,8 @@
 
 #include "snake.h"
 #include "macros.h"
+#include <vector>
+#include <string>
 
 class SnakeMap
 {
@@ -13,11 +15,11 @@ public:
 	void update_snake_food(bool force_update);
 	void update_score();
 private:
-	char map_array[MAP_HEIGHT][MAP_WIDTH];
+	vector<vector<string>> map_array;
 	Snake *snake;
 };
 
-void clear_map(char map_array[MAP_HEIGHT][MAP_WIDTH]);
-void update_snake_head(char map_array[MAP_HEIGHT][MAP_WIDTH], Snake *snake);
+void clear_map(vector<vector<string>> &map_array);
+void update_snake_head(vector<vector<string>> &map_array, Snake *snake);
 
 #endif
