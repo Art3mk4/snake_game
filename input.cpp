@@ -4,42 +4,39 @@
 #include <bits/stdc++.h>
 #include <string>
 #include <stdio.h>
+#include <fcntl.h>
 
 using namespace std;
 
-struct termios t;
+static struct termios orig_tios;
 
 void input_enter_off()
 {
-	tcgetattr(STDIN_FILENO, &t);
-	t.c_lflag &= ~ICANON;
-	t.c_lflag &= ~ECHO;
+	tcgetattr(STDIN_FILENO, &orig_tios);
+	struct termios t = orig_tios;
+	t.c_lflag &= ~(ICANON | ECHO);
+	t.c_cc[VMIN] = 0;
+	t.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
 
 void input_enter_on()
 {
-	tcgetattr(STDIN_FILENO, &t);
-	t.c_lflag |= ICANON;
-	t.c_lflag |= ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &t);
+	tcsetattr(STDIN_FILENO, TCSANOW, &orig_tios);
 }
 
 enum Direction get_input()
 {
 	enum Direction result = Error;
-	char user_input;
+	char buf[64];
+	int n = read(STDIN_FILENO, buf, sizeof(buf));
 	
-	fd_set fd;
-	struct timeval timeout;
-	FD_ZERO(&fd);
-	FD_SET(STDIN_FILENO, &fd);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 10000; // 10ms
+	if (n <= 0) {
+		return Error;
+	}
 	
-	if (select(STDIN_FILENO + 1, &fd, NULL, NULL, &timeout) > 0) {
-		user_input = getchar();
-		switch (user_input) {
+	for (int i = 0; i < n; i++) {
+		switch (buf[i]) {
 		case 'a':
 			result = West;
 			break;
@@ -53,37 +50,26 @@ enum Direction get_input()
 			result = East;
 			break;
 		case '\033': {
-			char seq[3];
-			seq[0] = getchar();
-			if (seq[0] != '[') {
-				return Error;
-			}
-			seq[1] = getchar();
-			seq[2] = '\0';
-			switch (seq[1]) {
-			case 'A':
-				result = North;
-				break;
-			case 'B':
-				result = South;
-				break;
-			case 'C':
-				result = East;
-				break;
-			case 'D':
-				result = West;
-				break;
-			default:
-				return Error;
+			if (i + 2 < n && buf[i+1] == '[') {
+				switch (buf[i+2]) {
+				case 'A':
+					result = North;
+					break;
+				case 'B':
+					result = South;
+					break;
+				case 'C':
+					result = East;
+					break;
+				case 'D':
+					result = West;
+					break;
+				}
+				i += 2; // skip escape sequence
 			}
 			break;
 		}
-		default:
-			result = Error;
-			break;
 		}
-	} else {
-		result = Error;
 	}
 	
 	return result;
