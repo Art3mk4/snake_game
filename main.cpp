@@ -16,6 +16,40 @@ using namespace std;
 Snake snake;
 SnakeMap snake_map(&snake);
 
+void poll_input()
+{
+	char buf[64];
+	int n = read(STDIN_FILENO, buf, sizeof(buf));
+
+	if (n <= 0) {
+		return;
+	}
+
+	for (int i = 0; i < n; i++) {
+		enum Direction direction = Error;
+		switch (buf[i]) {
+		case 'a': direction = West; break;
+		case 'w': direction = North; break;
+		case 's': direction = South; break;
+		case 'd': direction = East; break;
+		case '\033':
+			if (i + 2 < n && buf[i+1] == '[') {
+				switch (buf[i+2]) {
+				case 'A': direction = North; break;
+				case 'B': direction = South; break;
+				case 'C': direction = East; break;
+				case 'D': direction = West; break;
+				}
+				i += 2;
+			}
+			break;
+		}
+		if (direction != Error) {
+			snake.update_direction(direction);
+		}
+	}
+}
+
 void initialize()
 {
 	input_init();
@@ -46,6 +80,7 @@ void start_game()
 {
 	while (true)
 	{
+		poll_input();
 		snake.update_movement();
 		if (is_game_end())
 		{
@@ -54,7 +89,6 @@ void start_game()
 		}
 		snake_map.redraw();
 		usleep(PAUSE_LENTH);
-		snake.validate_direction();
 	}
 }
 
