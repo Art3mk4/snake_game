@@ -1,5 +1,4 @@
 #include "snake.h"
-#include <pthread.h>
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -8,27 +7,15 @@
 
 using namespace std;
 
-void *input_thread_work(void *arg)
-{
-	struct Snake *snake = (struct Snake *)arg;
-	while (true)
-	{
-		enum Direction direction = get_input();
-		snake->update_next_direction(direction);
-	}
-}
-
 Snake::Snake(void)
 {
 	direction  = East;
-	next_direction = direction;
 	food_eaten = false;
 	is_dead = false;
 	length = INITIAL_SNAKE_LENTH;
 	clear_snake_world();
 	initialize_snake();
 	sem_init(&snake_sema, 0, 1);
-	pthread_create(&input_thread, NULL, input_thread_work, this);
 }
 
 void Snake::update_direction(enum Direction direction)
@@ -64,13 +51,6 @@ void Snake::update_direction(enum Direction direction)
 	sem_post(&this->snake_sema);
 }
 
-void Snake::update_next_direction(enum Direction direction)
-{
-	if (direction != Error) {
-		this->next_direction = direction;
-	}
-}
-
 enum Direction Snake::get_direction(void)
 {
 	enum Direction result = East;
@@ -78,14 +58,6 @@ enum Direction Snake::get_direction(void)
 	result = this->direction;
 	sem_post(&this->snake_sema);
 	return result;
-}
-
-void Snake::validate_direction(void)
-{
-	if (next_direction != Error)
-	{
-		update_direction(next_direction);
-	}
 }
 
 void Snake::update_movement(void)
