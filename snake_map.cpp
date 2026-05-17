@@ -58,18 +58,35 @@ void SnakeMap::redraw(void)
     }
 
     map_array[snake_food.first][snake_food.second] = SNAKE_FOOD_CHAR;
+
+    // Top border
+    cout << "+";
+    for (int j = 0; j < MAP_WIDTH; j++) {
+        cout << "──";
+    }
+    cout << "+" << endl;
+
+    // Map rows with side borders
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
+        cout << "|";
         for (int j = 0; j < MAP_WIDTH; j++)
         {
             if (map_array[i][j] == MAP_CHAR) {
-                cout << " ";
+                cout << "  ";
             } else {
-                cout << map_array[i][j] << " ";
+                cout << map_array[i][j];
             }
         }
-        cout << endl;
+        cout << "|" << endl;
     }
+
+    // Bottom border
+    cout << "+";
+    for (int j = 0; j < MAP_WIDTH; j++) {
+        cout << "──";
+    }
+    cout << "+" << endl;
 }
 
 void SnakeMap::update_snake_food(bool force_update)
@@ -127,5 +144,6 @@ void update_snake_head(vector<vector<string>> &map_array, Snake *snake)
 
 void SnakeMap::update_score(void)
 {
-    cout << BOLDBLUE << "Score:" << YELLOW <<snake->length << RESET << endl;
+    cout << "| Score: " << snake->length << string(32 - to_string(snake->length).length(), ' ') << " |";
+    cout << endl;
 }

@@ -73,7 +73,7 @@ bool is_game_end()
 
 void game_over()
 {
-	cout << "GAME IS OVER" << endl;
+	cout << "| GAME IS OVER" << string(27, ' ') << " |" << endl;
 }
 
 void start_game()
