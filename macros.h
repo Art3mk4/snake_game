@@ -12,7 +12,10 @@
 #define SNAKE_HEAD_SOUTH "🐍"
 #define SNAKE_FOOD_CHAR "🍎"
 
-#define INITIAL_SNAKE_LENTH 3
+#define BORDER_TOP "──"
+#define BORDER_LEFT "+"
+
+#define INITIAL_SNAKE_LENTH 10
 #define PAUSE_LENTH 1000 * 200 // 200 miliseconds
 
 #endif
