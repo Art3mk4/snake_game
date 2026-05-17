@@ -15,7 +15,7 @@
 #define BORDER_TOP "──"
 #define BORDER_LEFT "+"
 
-#define INITIAL_SNAKE_LENTH 10
+#define INITIAL_SNAKE_LENTH 3
 #define PAUSE_LENTH 1000 * 200 // 200 miliseconds
 
 #endif
